@@ -1,0 +1,90 @@
+_prefs:
+  disabled: []
+  inspector: false
+  mapid: ''
+  rev: ''
+  saveCenter: true
+attribution: '<a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>'
+center:
+  - 2.5388
+  - 48.3434
+  - 12
+description: |-
+  Free global vector tiles from OpenStreetMap compatible with Mapbox Streets v7.
+  http://osm2vectortiles.org
+srid: 3857
+buffer: 20
+layers:
+  - name: buildings
+    queries:
+    - minzoom : 14
+      maxzoom: 19
+      sql: |-
+          SELECT   geometry way, osm_id, name, class
+          FROM import.osm_buildings
+  - name: landusages
+    queries:
+    - minzoom : 5
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, class
+            FROM import.osm_landusages
+            where class in ('basin','reservoir','riverbank','water','park','grass','pedestrian','footway')
+  - name: places
+    queries:
+    - minzoom : 5
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, class
+            FROM import.osm_places
+  - name: roads
+    queries:
+    - minzoom : 7
+      maxzoom: 20
+      sql: |-
+          SELECT  geometry way,class,osm_id, name, tunnel, bridge, oneway, ref, layer
+            FROM import.osm_roads
+            where class = 'highway'
+  - name: roads_rail
+    queries:
+    - minzoom : 7
+      maxzoom: 20
+      sql: |-
+          SELECT  geometry way,class,osm_id, name, tunnel, bridge, oneway, ref, layer
+            FROM import.osm_roads
+            where class = 'railway' and tags @> '"usage"=>"main"'
+  - name: roads_poly
+    queries:
+    - minzoom : 7
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, class, subclass
+            FROM import.osm_roads_poly
+    - name: transport_areas
+    queries:
+    - minzoom : 9
+      maxzoom: 20
+      sql: |-
+         SELECT   geometry way, osm_id, name, class
+            FROM import.osm_transport_areas
+  - name: transport_points
+    queries:
+    - minzoom : 7
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, class, ref, network, operator
+            FROM import.osm_transport_points
+  - name: waterareas
+    queries:
+    - minzoom : 9
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, class
+            FROM import.osm_waterareas
+  - name: waterways
+    queries:
+    - minzoom : 9
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, osm_id, name, type as class
+            FROM import.osm_waterways

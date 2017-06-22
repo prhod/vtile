@@ -1,0 +1,196 @@
+﻿SET search_path TO idf,public;
+select * from osm_join_members 
+where route in ('bus')
+limit 10
+
+select * from bus 
+limit 100
+
+select * from points_union 
+limit 10
+
+select st_GeometryType(geom) a from points_union group by a
+
+select * from bus ;
+
+--creation table de bus
+
+drop table bus;
+CREATE TABLE bus
+AS
+SELECT osm_join_members.name     AS            name,
+       osm_join_members.route    AS           route,
+       osm_join_members.member_operator AS member_operator,
+       osm_join_members.member_ref      AS      member_ref,
+       osm_join_members.member_network  AS  member_network,
+       osm_join_members.member_id   AS       member_id,
+       osm_join_members.geometry AS        geometry,
+       osm_join_members.role     AS            role,
+       osm_join_members.id_relation   AS     id_relation,
+       osm_join_members.relation_tags            AS   relation_tags,
+       osm_join_members.relation_colour_init          AS   relation_colour_init
+FROM   osm_join_members 
+WHERE  osm_join_members.route in ('bus') AND osm_join_members.route != '' AND
+       ST_GeometryType(geometry) = 'ST_LineString'
+       ; 
+
+ALTER TABLE bus ADD COLUMN id SERIAL PRIMARY KEY;
+
+CREATE INDEX on bus (id);
+CREATE INDEX ON bus UsiNG GIST(geometry);
+
+
+--- table des points d'intersection
+DROP TABLE points_union ;
+CREATE TABLE points_union  (
+  id serial PRIMARY KEY,
+  geom geometry );
+
+WITH ix AS
+(
+  SELECT DISTINCT ST_Intersection(ST_SnapToGrid(a.geometry, 50.0), ST_SnapToGrid(b.geometry, 50.0)) geom 
+  FROM bus a JOIN bus b ON ST_Intersects(a.geometry,b.geometry)
+),
+ix_simple_lines AS
+(
+  SELECT
+    (ST_Dump(ST_LineMerge(ST_CollectionExtract(geom, 2)))).geom geom
+  FROM
+    ix
+),
+ix_points AS
+(
+  SELECT
+    (ST_Dump(ST_CollectionExtract(geom, 1))).geom geom
+  FROM
+    ix
+)
+INSERT INTO points_union 
+SELECT
+  row_number() OVER() id,
+  geom
+FROM
+(
+  SELECT ST_StartPoint(geom) geom FROM ix_simple_lines
+  UNION
+  SELECT ST_EndPoint(geom) FROM ix_simple_lines
+  UNION
+  SELECT geom FROM ix_points
+)points_union
+ 
+
+CREATE INDEX on points_union (id);
+CREATE INDEX ON points_union UsiNG GIST(geom);
+
+DROP TABLE point_a;
+CREATE TABLE point_a  (
+    bus_id integer,
+    pt_id integer,
+    loc float) ;
+
+DROP TABLE point_b;
+CREATE TABLE point_b  (
+    bus_id integer,
+    pt_from integer,
+    loc_from float,
+    pt_to integer,
+    loc_to float) ;    
+
+
+WITH 
+a AS
+(
+-- Calculate the linear position (loc) of points on the line
+  SELECT
+    bus.id bus_id,
+    points_union.id pt_id,
+    ST_LineLocatePoint(bus.geometry, points_union.geom) loc
+  FROM
+    bus
+  JOIN
+    points_union ON ST_DWithin(bus.geometry, points_union.geom, 100.0)
+),
+
+b AS
+(
+-- Calculate from/to segments on lines by retrieving the next segment 
+-- on the line with the LEAD window function, ordered by location (loc)
+  SELECT
+    bus_id,
+    pt_id pt_from,
+    loc loc_from,
+    LEAD(pt_id) OVER w_b pt_to,
+    LEAD(loc) OVER w_b loc_to
+  FROM
+    a
+  WINDOW w_b AS (PARTITION BY bus_id ORDER BY loc)
+)
+-- Use row_number to count the number of the overlapping lines between pt_from and pt_to
+-- It can be used to parametrize the offset to be displayed
+
+
+--INSERT INTO point_a
+--SELECT
+ --  bus_id,
+  --  pt_id,
+  --  loc
+--FROM a
+
+INSERT INTO point_b
+SELECT *
+FROM b
+
+
+SELECT
+  row_number() OVER() fid, -- generate unique fid
+  pt_from,
+  loc_from,
+  pt_to,
+  loc_to,
+  bus_id,
+  row_number() OVER w_c offset_nr, -- iterate on overlapping lines
+  ST_LineSubstring(bus.geometry, loc_from, loc_to)::geometry(LineString, 3857) geom  -- cut lines to make segments
+FROM
+  point_b b
+JOIN
+  bus ON b.bus_id = bus.id
+WHERE
+  pt_to IS NOT NULL
+WINDOW w_c AS (PARTITION BY pt_from, pt_to ORDER BY bus_id, loc_from)
+;
+
+
+
+DROP TABLE lignes;
+CREATE TABLE lignes  (
+    fid integer,
+    pt_from integer,
+    loc_from float,
+    pt_to integer,
+    loc_to float,
+    bus_id integer,
+    offset_nr integer,
+    geom geometry) ;    
+
+INSERT INTO lignes 
+SELECT
+  row_number() OVER() fid, -- generate unique fid
+  pt_from,
+  loc_from,
+  pt_to,
+  loc_to,
+  bus_id,
+  row_number() OVER w_c offset_nr, 
+  ST_LineSubstring(bus.geometry, loc_from, loc_to) geom -- cut lines to make segments
+FROM
+  point_b b
+JOIN
+  bus ON b.bus_id = bus.id
+WHERE
+  pt_to IS NOT NULL
+WINDOW w_c AS (PARTITION BY pt_from, pt_to ORDER BY bus_id, loc_from)
+
+
+
+
+

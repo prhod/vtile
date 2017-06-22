@@ -1,0 +1,530 @@
+tags:
+  load_all: true
+  exclude:
+  - created_by
+  - source
+
+tables:
+  all_relation_members:
+    type: relation_member
+    fields:
+    - name: osm_id
+      type: id
+    - name: member
+      type: member_id
+    - name: index
+      type: member_index
+    - name: role
+      type: member_role
+    - name: type
+      type: member_type
+    - name: geometry
+      type: geometry
+    - key: network
+      name: network
+      type: string
+    - key: operator
+      name: operator
+      type: string
+    - name: name
+      key: name
+      type: string 
+    - name: ref
+      key: ref
+      type: integer 
+    - name: route
+      key: route
+      type: string        
+    - name: tags
+      type: hstore_tags
+    - name: category
+      type: mapping_key
+    - name: relname
+      key: relname
+      type: string
+      from_member: true
+    mapping:
+      __any__:
+      - __any__
+
+
+  all_relations:
+    type: relation
+    fields:
+    - name: osm_id
+      type: id
+    - key: type
+      name: type
+      type: string
+    - key: colour
+      name: colour
+      type: string
+    - key: name
+      name: name
+      type: string      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      __any__:
+      - __any__
+  admin:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: category
+      type: mapping_value
+    - key: admin_level
+      name: admin_level
+      type: integer      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      boundary:
+      - __any__
+    type: polygon
+  buildings:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string      
+    - name: tags
+      type: hstore_tags
+    - name: category
+      type: mapping_key
+    mapping:
+      building:
+      - __any__
+    type: polygon
+  housenumbers:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: category
+      type: mapping_key
+    - key: addr:street
+      name: addr:street
+      type: string
+    - key: addr:postcode
+      name: addr:postcode
+      type: string
+    - key: addr:city
+      name: addr:city
+      type: string      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      addr:housenumber:
+      - __any__
+    type: point
+  landusages:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: category
+      type: mapping_key
+    - key: name
+      name: name
+      type: string
+    - name: class
+      type: mapping_value      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      aeroway:
+       - __any__
+      amenity:
+       - __any__
+      barrier:
+      - hedge
+      highway:
+      - pedestrian
+      - footway
+      landuse:
+      - park
+      - forest
+      - residential
+      - retail
+      - commercial
+      - industrial
+      - railway
+      - cemetery
+      - grass
+      - farmyard
+      - farm
+      - farmland
+      - orchard
+      - vineyard
+      - wood
+      - meadow
+      - village_green
+      - recreation_ground
+      - allotments
+      - quarry
+      leisure:
+      - __any__
+      man_made:
+      - __any__
+      military:
+      - barracks
+      natural:
+      - wood
+      - land
+      - scrub
+      - wetland
+      - water
+      - heath
+      place:
+      - island
+      tourism:
+      - __any__
+    type: polygon
+  poi:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: key
+      type: mapping_key
+    - name: class
+      type: mapping_value      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      amenity:
+       - __any__
+      leisure:
+      - __any__
+      man_made:
+      - __any__
+      tourism:
+      - __any__
+    type: point
+  places:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: category
+      type: mapping_key
+    - name: class
+      type: mapping_value
+    - key: population
+      name: population
+      type: integer      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      place:
+      - __any__
+    type: point
+  roads:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_value
+    - key: name
+      name: name
+      type: string
+    - key: tunnel
+      name: tunnel
+      type: boolint
+    - key: bridge
+      name: bridge
+      type: boolint
+    - key: oneway
+      name: oneway
+      type: direction
+    - key: ref
+      name: ref
+      type: string
+    - key: layer
+      name: layer
+      type: integer
+    - key: level
+      name: level
+      type: integer
+    - key: access
+      name: access
+      type: string
+    - key: service
+      name: service
+      type: string      
+    - name: tags
+      type: hstore_tags
+    - name: category
+      type: mapping_key
+    filters:
+      exclude_tags:
+      - - area
+        - 'yes'
+    mappings:
+      railway:
+        mapping:
+          railway:
+          - rail
+          - tram
+          - light_rail
+          - subway
+          - narrow_gauge
+          - preserved
+          - funicular
+          - monorail
+          - disused
+      roads:
+        mapping:
+          highway:
+          - motorway
+          - motorway_link
+          - trunk
+          - trunk_link
+          - primary
+          - primary_link
+          - secondary
+          - secondary_link
+          - tertiary
+          - tertiary_link
+          - road
+          - path
+          - track
+          - service
+          - footway
+          - bridleway
+          - cycleway
+          - steps
+          - pedestrian
+          - living_street
+          - unclassified
+          - residential
+          - raceway
+          man_made:
+          - pier
+          - groyne
+    type: linestring
+  roads_poly:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_value
+    - key: name
+      name: name
+      type: string
+    - key: tunnel
+      name: tunnel
+      type: boolint
+    - key: bridge
+      name: bridge
+      type: boolint
+    - key: oneway
+      name: oneway
+      type: direction
+    - key: ref
+      name: ref
+      type: string
+    - key: layer
+      name: layer
+      type: integer
+    - key: access
+      name: access
+      type: string
+    - key: service
+      name: service
+      type: string      
+    - name: tags
+      type: hstore_tags
+    - name: category
+      type: mapping_key
+    filters:
+      include_tags:
+      - - area
+        - 'yes'
+    mappings:
+      railway:
+        mapping:
+          railway:
+          - rail
+          - tram
+          - light_rail
+          - subway
+          - narrow_gauge
+          - preserved
+          - funicular
+          - monorail
+          - disused
+      roads:
+        mapping:
+          highway:
+          - motorway
+          - motorway_link
+          - trunk
+          - trunk_link
+          - primary
+          - primary_link
+          - secondary
+          - secondary_link
+          - tertiary
+          - tertiary_link
+          - road
+          - path
+          - track
+          - service
+          - footway
+          - bridleway
+          - cycleway
+          - steps
+          - pedestrian
+          - living_street
+          - unclassified
+          - residential
+          - raceway
+          man_made:
+          - pier
+          - groyne
+    type: polygon
+  transport_areas:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string      
+    - name: tags
+      type: hstore_tags
+    - name: category
+      type: mapping_key
+    - name: class
+      type: mapping_value
+    mapping:
+      aeroway:
+      - aerodrome
+      - terminal
+      - helipad
+      - apron
+      railway:
+      - station
+      - platform
+      public_transport:
+      - __any__
+    type: polygon
+  transport_points:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: class
+      type: mapping_value
+    - key: operator
+      name: operator
+      type: string
+    - name: category
+      type: mapping_key
+    - key: network
+      name: network
+      type: string
+    - key: ref
+      name: ref
+      type: string
+    mapping:
+      aeroway:
+      - aerodrome
+      - terminal
+      - helipad
+      - gate
+      highway:
+      - motorway_junction
+      - turning_circle
+      - bus_stop
+      public_transport:
+      - __any__
+      railway:
+      - station
+      - halt
+      - tram_stop
+      - crossing
+      - level_crossing
+      - subway_entrance
+    type: point
+  waterareas:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: class
+      type: mapping_value      
+    - name: tags
+      type: hstore_tags
+    mapping:
+      amenity:
+      - swimming_pool
+      landuse:
+      - basin
+      - reservoir
+      leisure:
+      - swimming_pool
+      natural:
+      - water
+      waterway:
+      - riverbank
+    type: polygon
+  waterways:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: category
+      type: mapping_key
+    - name: class
+      type: mapping_value
+    mapping:
+      barrier:
+      - ditch
+      waterway:
+      - stream
+      - river
+      - canal
+      - drain
+      - ditch
+    type: linestring

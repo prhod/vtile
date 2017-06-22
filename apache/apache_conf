@@ -1,0 +1,26 @@
+<VirtualHost *>
+    ServerName localhost
+
+    WSGIScriptAlias / /srv/utilery.wsgi
+    WSGIProcessGroup utilery
+    WSGIDaemonProcess utilery user=ubuntu group=ubuntu processes=2 threads=5
+
+    DocumentRoot /srv/web/
+
+    <Location />
+		Require all granted
+	</Location>
+
+    <Directory /srv/web>
+        WSGIProcessGroup utilery
+        WSGIApplicationGroup utilery
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    ErrorLog /srv/log/apache-error.log
+	LogLevel warn
+	CustomLog /srv/log/apache-access.log combined
+	ServerSignature On
+
+</VirtualHost>

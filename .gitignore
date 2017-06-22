@@ -1,0 +1,6 @@
+.vagrant
+data
+log
+imposm3
+utilery
+*.log
