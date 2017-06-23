@@ -1,9 +1,9 @@
 <VirtualHost *>
     ServerName localhost
 
-    WSGIScriptAlias / /srv/utilery.wsgi
+    WSGIScriptAlias /utilery /srv/apache/utilery.wsgi
     WSGIProcessGroup utilery
-    WSGIDaemonProcess utilery user=ubuntu group=ubuntu processes=2 threads=5
+    WSGIDaemonProcess utilery user=ubuntu group=ubuntu processes=2 threads=5 python-home=/home/ubuntu/Envs/utilery/
 
     DocumentRoot /srv/web/
 
@@ -11,11 +11,15 @@
 		Require all granted
 	</Location>
 
-    <Directory /srv/web>
+    <Directory /srv/utilery>
         WSGIProcessGroup utilery
         WSGIApplicationGroup utilery
         Order deny,allow
         Allow from all
+    </Directory>
+
+    <Directory /srv/web>
+        Options Indexes FollowSymLinks
     </Directory>
 
     ErrorLog /srv/log/apache-error.log

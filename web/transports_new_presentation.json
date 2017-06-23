@@ -3,14 +3,14 @@
   "name": "Basic",
   "sources": {
     "transport": {
-  "type": "vector",
-  "tiles": [
-    "http://localhost:3579/all/{z}/{x}/{y}.pbf"
-  ]
-}
+      "type": "vector",
+      "tiles": [
+        "http://localhost:3579/all/{z}/{x}/{y}.pbf"
+      ]
+    }
   },
-  "sprite" :"http://vtile.openstreetmap.fr/jb/sprites/basic-v9",
-  "glyphs" :"/jb/glyphs/{fontstack}/{range}.pbf",
+  "sprite" :"http://localhost:8888/sprites/basic-v9",
+  "glyphs" :"http://localhost:8888/glyphs/{fontstack}/{range}.pbf",
   "layers": [
     {
      "id": "fond",

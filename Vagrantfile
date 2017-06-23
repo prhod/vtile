@@ -17,13 +17,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
 
-  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/Vagrant_setup1.sh"
-  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/Vagrant_setup2.sh"
+  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup1.sh"
+  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup2_db.sh"
+  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup3_apache.sh"
   config.vm.network "forwarded_port", guest: 80, host: 8888
   config.vm.network "forwarded_port", guest: 3579, host: 3579
 
   config.trigger.before :destroy do
    info "Cleaning up local files..."
-   run_remote  "bash /srv/Vagrant_cleanup.sh"
+   run_remote  "bash /srv/vagrant/Vagrant_cleanup.sh"
   end
 end

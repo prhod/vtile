@@ -28,13 +28,13 @@ tables:
       type: string
     - name: name
       key: name
-      type: string 
+      type: string
     - name: ref
       key: ref
-      type: integer 
+      type: integer
     - name: route
       key: route
-      type: string        
+      type: string
     - name: tags
       type: hstore_tags
     - name: category
@@ -61,7 +61,7 @@ tables:
       type: string
     - key: name
       name: name
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     mapping:
@@ -80,7 +80,7 @@ tables:
       type: mapping_value
     - key: admin_level
       name: admin_level
-      type: integer      
+      type: integer
     - name: tags
       type: hstore_tags
     mapping:
@@ -95,11 +95,14 @@ tables:
       type: geometry
     - key: name
       name: name
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     - name: category
       type: mapping_key
+    - name: class
+      type: string
+      key: amenity
     mapping:
       building:
       - __any__
@@ -123,7 +126,7 @@ tables:
       type: string
     - key: addr:city
       name: addr:city
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     mapping:
@@ -142,7 +145,7 @@ tables:
       name: name
       type: string
     - name: class
-      type: mapping_value      
+      type: mapping_value
     - name: tags
       type: hstore_tags
     mapping:
@@ -206,7 +209,7 @@ tables:
     - name: key
       type: mapping_key
     - name: class
-      type: mapping_value      
+      type: mapping_value
     - name: tags
       type: hstore_tags
     mapping:
@@ -234,7 +237,7 @@ tables:
       type: mapping_value
     - key: population
       name: population
-      type: integer      
+      type: integer
     - name: tags
       type: hstore_tags
     mapping:
@@ -275,7 +278,7 @@ tables:
       type: string
     - key: service
       name: service
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     - name: category
@@ -358,7 +361,7 @@ tables:
       type: string
     - key: service
       name: service
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     - name: category
@@ -418,7 +421,7 @@ tables:
       type: geometry
     - key: name
       name: name
-      type: string      
+      type: string
     - name: tags
       type: hstore_tags
     - name: category
@@ -489,7 +492,7 @@ tables:
       name: name
       type: string
     - name: class
-      type: mapping_value      
+      type: mapping_value
     - name: tags
       type: hstore_tags
     mapping:

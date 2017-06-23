@@ -22,6 +22,7 @@ layers:
       sql: |-
           SELECT   geometry way, osm_id, name, class
           FROM import.osm_buildings
+          WHERE class in ('university','public_building','cathedrale','chapel', 'historic','church','couvent', 'hospital','public','office','monument','civic') or tags @> '"tourism"=>"museum"'::hstore or tags @> '"historic"=>"castle"'::hstore or tags @> '"amenity"=>"post_office"'::hstore
   - name: landusages
     queries:
     - minzoom : 5
@@ -74,6 +75,13 @@ layers:
       sql: |-
           SELECT   geometry way, osm_id, name, class, ref, network, operator
             FROM import.osm_transport_points
+  - name: route_members
+    queries:
+    - minzoom : 7
+      maxzoom: 20
+      sql: |-
+          SELECT   geometry way, name, member_ref,member_network, member_operator, member_id, relation_colour, route
+            FROM import.osm_join_members
   - name: waterareas
     queries:
     - minzoom : 9
@@ -86,5 +94,5 @@ layers:
     - minzoom : 9
       maxzoom: 20
       sql: |-
-          SELECT   geometry way, osm_id, name, type as class
+          SELECT   geometry way, osm_id, name, class
             FROM import.osm_waterways

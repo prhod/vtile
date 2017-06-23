@@ -1,7 +1,7 @@
 DATABASES = {
     "default": "dbname=utilery user=ubuntu password=-ubuntu- host=localhost"
 }
-RECIPES = ['/srv/utilery.yml']
+RECIPES = ['/srv/utilery_conf/utilery.yml']
 TILEJSON = {
     "tilejson": "2.1.0",
     "name": "utilery",
