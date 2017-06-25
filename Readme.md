@@ -7,6 +7,10 @@ Installer le plugin : `vagrant plugin install vagrant-triggers`
 1. se placer dans le répertoire d'installation
 2. récupérer le projet : `git clone http://github.com/osm-fr/vtile`
 3. lancer la machine : `cd vtile && vagrant up`
+4. lancer le serveur de tuiles (voir ci-dessous)
+5. Sur la machine hôte, lancer un navigateur vers http://localhost:8888.
+
+Si la page est blanche, attendez encode un peu, la carte peut mettre plus de 30 secondes à s'afficher.
 
 ## Lancer le serveur de tuiles vectorielles
 1. se placer dans le dossier `cd /srv/utilery`
@@ -14,7 +18,7 @@ Installer le plugin : `vagrant plugin install vagrant-triggers`
 3. lancer le web service : `python utilery/serve.py`
 4. dans un navigateur, aller sur le site : `http://localhost:3579/all/16/33186/22547.pbf`
 
-Si tout va bien, le ficher devrait être téléchargé
+Si tout va bien, le ficher devrait être téléchargé.
 
 ## Comment bidouiller
 ### Comment mettre à jour les données ou changer de région
