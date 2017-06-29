@@ -1,5 +1,5 @@
 DATABASES = {
-    "default": "dbname=utilery user=ubuntu password=-ubuntu- host=localhost"
+    "default": "dbname=bus_vectoriel user=python host=datasrv.canaltp.local"
 }
 RECIPES = ['/srv/utilery_conf/utilery.yml']
 TILEJSON = {

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+            border-radius: 3px;
+            position: absolute;
+            width: 25%;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+
+    <div id='map'></div>
+    <div id='map-overlay' class='map-overlay'></div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoibmxlaHVieSIsImEiOiJpbEphM2dZIn0.9hWFRefZjujzjF_TtBXHcg';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            //style: 'mapbox://styles/mapbox/streets-v9',
+            style: {
+                "version": 8,
+                "sources": {
+                    "raster-tiles": {
+                        "type": "raster",
+                        "url": "mapbox://mapbox.streets",
+                        "tileSize": 256
+                    },
+                    "bus_vectoriel": {
+                        "type": "vector",
+                        //"url": "http://datasrv.canaltp.local:3579/all/{z}/{x}/{y}.pbf",
+                        "tiles": [
+                            "http://datasrv.canaltp.local:3579/all/{z}/{x}/{y}.pbf"
+                        ]
+                    },
+                },
+                "layers": [{
+                        "id": "simple-tiles",
+                        "type": "raster",
+                        "source": "raster-tiles",
+                        "minzoom": 0,
+                        "maxzoom": 22
+                    },
+                    {
+                        "id": "test_bus",
+                        "type": "circle",
+                        "source-layer": "navitia_stops",
+                        "source": "bus_vectoriel",
+                        "minzoom": 0,
+                        "maxzoom": 22,
+                        'paint': {
+                            "circle-radius": 10,
+                            "circle-color": "#007cbf"
+                        }
+                    }
+                ],
+                center: [3.0577, 50.6322],
+                minZoom: 2,
+                zoom: 15,
+            }
+        });
+        /*
+        map.on('load', function() {
+
+            map.addLayer({
+                'id': 'population',
+                'type': 'circle',
+                'source': 'bus_vectoriel',
+                'source-layer': 'navitia_stops',
+                'paint': {
+                    // make circles larger as the user zooms from z12 to z22
+                    'circle-radius': {
+                        'base': 1.75,
+                        'stops': [
+                            [12, 2],
+                            [22, 180]
+                        ]
+                    },
+                    // color circles by ethnicity, using data-driven styles
+                    'circle-color': {
+                        property: 'ethnicity',
+                        type: 'categorical',
+                        stops: [
+                            ['White', '#fbb03b'],
+                            ['Black', '#223b53'],
+                            ['Hispanic', '#e55e5e'],
+                            ['Asian', '#3bb2d0'],
+                            ['Other', '#ccc']
+                        ]
+                    }
+                }
+            });
+        });*/
+    </script>
+
+</body>
+
+</html>

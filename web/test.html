@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+            border-radius: 3px;
+            position: absolute;
+            width: 25%;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+
+    <div id='map'></div>
+    <div id='map-overlay' class='map-overlay'></div>
+
+    <script>
+        var map = new mapboxgl.Map({
+            container: 'map',
+            //style: 'mapbox://styles/mapbox/streets-v9',
+            style: {
+                "version": 8,
+                "sources": {
+                    "raster-tiles": {
+                        "type": "raster",
+                        "tiles": [
+                            "https://tile-a.navitia.io/osm_bright/{z}/{x}/{y}.png"
+                        ]
+                    },
+                    "bus_vectoriel": {
+                        "type": "vector",
+                        "tiles": [
+                            "http://localhost:3579/all/{z}/{x}/{y}.pbf"
+                        ]
+                    },
+                },
+                "layers": [{
+                        "id": "simple-tiles",
+                        "type": "raster",
+                        "source": "raster-tiles",
+                        "minzoom": 0,
+                        "maxzoom": 22
+                    },
+                    {
+                        "id": "test-bus",
+                        "type": "circle",
+                        "source-layer": "navitia_stops",
+                        "name": "navitia_stops",
+                        "source": "bus_vectoriel",
+                        "minzoom": 0,
+                        "maxzoom": 22,
+                        'paint': {
+                            // make circles larger as the user zooms from z12 to z22
+                            'circle-radius': {
+                                'base': 1.75,
+                                'stops': [
+                                    [12, 2],
+                                    [22, 180]
+                                ]
+                            },
+                            'circle-color': "#6e599f"
+                        }
+                    }
+                ],
+                center: [3.0577, 50.6322],
+                minZoom: 2,
+                zoom: 15,
+            }
+        });
+
+        var overlay = document.getElementById('map-overlay');
+
+        map.on('load', function() {
+            map.addLayer({
+                "id": "test-bus-envaleur",
+                "type": "circle",
+                "source-layer": "navitia_stops",
+                "source": "bus_vectoriel",
+                "minzoom": 0,
+                "maxzoom": 22,
+                "filter": ["in", "nom", ""],
+                'paint': {
+                    // make circles larger as the user zooms from z12 to z22
+                    'circle-radius': {
+                        'base': 8.75,
+                        'stops': [
+                            [12, 2],
+                            [22, 180]
+                        ]
+                    },
+                    // color circles by ethnicity, using data-driven styles
+                    'circle-color': "#ff599f",
+                }
+            });
+
+
+            map.on('mousemove', 'test-bus', function(e) {
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+
+                // Single out the first found feature.
+                var feature = e.features[0];
+
+                // Query the counties layer visible in the map. Use the filter
+                // param to only collect results that share the same name.
+                var relatedFeatures = map.querySourceFeatures('bus_vectoriel', {
+                    sourceLayer: 'navitia_stops',
+                    filter: ['in', 'nom', feature.properties.nom]
+                });
+                console.log(map.style.sourceCaches)
+                console.log(relatedFeatures)
+                // Render found features in an overlay.
+                overlay.innerHTML = '';
+
+
+                var title = document.createElement('strong');
+                title.textContent = feature.properties.nom + ' (' + relatedFeatures.length + ' found)';
+
+                var population = document.createElement('div');
+                population.textContent = 'Total : ' + relatedFeatures.length;
+
+                overlay.appendChild(title);
+                overlay.appendChild(population);
+                overlay.style.display = 'block';
+
+                // Add features that share the same county name to the highlighted layer.
+                map.setFilter('test-bus-envaleur', ['in', 'nom', feature.properties.nom]);
+
+                // Display a popup with the name of the county
+                /*
+                popup.setLngLat(e.lngLat)
+                    .setText(feature.properties.nom)
+                    .addTo(map);*/
+            });
+
+            map.on('mouseleave', 'test-bus', function() {
+                map.getCanvas().style.cursor = '';
+                //popup.remove();
+                map.setFilter('test-bus-envaleur', ['in', 'nom', '']);
+                overlay.style.display = 'none';
+
+            });
+        });
+    </script>
+
+</body>
+
+</html>
