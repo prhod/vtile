@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title></title>
+    <title>Canal Hacké</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
@@ -80,9 +80,9 @@
                         'paint': {
                             // make circles larger as the user zooms from z12 to z22
                             'circle-radius': {
-                                'base': 1.75,
+                                'base': 7.75,
                                 'stops': [
-                                    [12, 2],
+                                    [12, 8],
                                     [22, 180]
                                 ]
                             },
@@ -97,6 +97,9 @@
         });
 
         var overlay = document.getElementById('map-overlay');
+        var popup = new mapboxgl.Popup({
+            closeButton: false
+        });
 
         map.on('load', function() {
             map.addLayer({
@@ -110,9 +113,9 @@
                 'paint': {
                     // make circles larger as the user zooms from z12 to z22
                     'circle-radius': {
-                        'base': 8.75,
+                        'base': 5.75,
                         'stops': [
-                            [12, 2],
+                            [12, 12],
                             [22, 180]
                         ]
                     },
@@ -135,35 +138,33 @@
                     sourceLayer: 'navitia_stops',
                     filter: ['in', 'nom', feature.properties.nom]
                 });
-                console.log(map.style.sourceCaches)
-                console.log(relatedFeatures)
+
                 // Render found features in an overlay.
                 overlay.innerHTML = '';
 
 
                 var title = document.createElement('strong');
-                title.textContent = feature.properties.nom + ' (' + relatedFeatures.length + ' found)';
+                title.textContent = feature.properties.nom;
 
                 var population = document.createElement('div');
-                population.textContent = 'Total : ' + relatedFeatures.length;
+                population.textContent = 'Total visible : ' + relatedFeatures.length;
 
                 overlay.appendChild(title);
                 overlay.appendChild(population);
                 overlay.style.display = 'block';
 
-                // Add features that share the same county name to the highlighted layer.
+                // Add features that share the same name to the highlighted layer.
                 map.setFilter('test-bus-envaleur', ['in', 'nom', feature.properties.nom]);
 
-                // Display a popup with the name of the county
-                /*
+                // Display a popup with the name
                 popup.setLngLat(e.lngLat)
                     .setText(feature.properties.nom)
-                    .addTo(map);*/
+                    .addTo(map);
             });
 
             map.on('mouseleave', 'test-bus', function() {
                 map.getCanvas().style.cursor = '';
-                //popup.remove();
+                popup.remove();
                 map.setFilter('test-bus-envaleur', ['in', 'nom', '']);
                 overlay.style.display = 'none';
 
