@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Canal Hacké</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+            border-radius: 3px;
+            position: absolute;
+            width: 25%;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+
+    <div id='map'></div>
+    <div id='map-overlay' class='map-overlay'></div>
+
+    <script>
+        var map = new mapboxgl.Map({
+            container: 'map',
+            //style: 'mapbox://styles/mapbox/streets-v9',
+            style: {
+                "version": 8,
+                "sources": {
+                    "raster-tiles": {
+                        "type": "raster",
+                        "tiles": [
+                            //"https://tile-a.navitia.io/osm_bright/{z}/{x}/{y}.png"
+                            "http://a.tile.osm.org/{z}/{x}/{y}.png"
+                        ]
+                    },
+                    "bus_vectoriel": {
+                        "type": "vector",
+                        "tiles": [
+                            "http://localhost:3579/all/{z}/{x}/{y}.pbf"
+                        ]
+                    },
+                },
+                "layers": [{
+                        "id": "simple-tiles",
+                        "type": "raster",
+                        "source": "raster-tiles",
+                        "minzoom": 0,
+                        "maxzoom": 22
+                    }
+
+                ],
+                center: [1.846412, 48.989759],
+                //center: [2.369682, 48.736836]
+                minZoom: 2,
+                zoom: 15,
+            }
+        });
+
+        var overlay = document.getElementById('map-overlay');
+        var popup = new mapboxgl.Popup({
+            closeButton: false
+        });
+
+        map.on('load', function() {
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('chats', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Eagle_01.svg/317px-Eagle_01.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('aigle', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Wolf.svg/107px-Wolf.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('loup', image);
+            });
+            map.loadImage('https://openclipart.org/image/100px/svg_to_png/248815/Pineapple3.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('ananas', image);
+            });
+            map.loadImage('https://openclipart.org/image/100px/svg_to_png/265218/1477690035.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('carpe', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Blason_ville_fr_SaintLo_%28Manche%29.svg/109px-Blason_ville_fr_SaintLo_%28Manche%29.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('licornes', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Apple.svg/120px-Apple.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('pomme', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Coccinelle.svg/120px-Coccinelle.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('coccinelles', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Duck_Sotka1.svg/120px-Duck_Sotka1.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('canard', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Chicken_silhouette_02.svg/120px-Chicken_silhouette_02.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('poules', image);
+            });
+            map.loadImage('https://openclipart.org/image/100px/svg_to_png/220765/Horse.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('cheval', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Cowicon.svg/120px-Cowicon.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('vaches', image);
+            });
+            map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/H%C3%A9raldique_meuble_Grappe_de_raisin.svg/185px-H%C3%A9raldique_meuble_Grappe_de_raisin.svg.png', (error, image) => {
+                if (error) throw error;
+                map.addImage('raisins', image);
+            });
+
+            map.addLayer({
+                "id": "test-bus-wtf",
+                "type": "symbol",
+                "source-layer": "navitia_stops",
+                "source": "bus_vectoriel",
+                "minzoom": 0,
+                "maxzoom": 22,
+                //"filter": ["in", "wtf_category", "chats"],
+                "layout": {
+                    "icon-image": "{wtf_category}",
+                    "icon-size": 0.25
+                }
+            });
+            map.on('mousemove', 'test-bus-wtf', function(e) {
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+
+                // Single out the first found feature.
+                var feature = e.features[0];
+
+                // Display a popup with the name
+                popup.setLngLat(e.lngLat)
+                    .setText(feature.properties.nom)
+                    .addTo(map);
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
+
+</script>
+
+</body>
+
+</html>

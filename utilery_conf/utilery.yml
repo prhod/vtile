@@ -17,8 +17,9 @@ buffer: 20
 layers:
   - name: navitia_stops
     queries:
-    - minzoom : 5
-      maxzoom: 19
+    - minzoom : 0
+      maxzoom: 22
       sql: |-
-          SELECT geom2 as way, identifiant, nom
+          SELECT geom2 as way, identifiant, nom, wtf_category
           FROM stops
+          where wtf_category is not null
