@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
 
-  config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup1.sh"
+  config.vm.provision :shell, :privileged => false, :inline => "bash -i /srv/vagrant/Vagrant_setup1.sh"
   config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup2_db.sh"
   config.vm.provision :shell, :privileged => false, :inline => "bash /srv/vagrant/Vagrant_setup3_apache.sh"
   config.vm.network "forwarded_port", guest: 80, host: 8888
