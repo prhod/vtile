@@ -5,7 +5,7 @@
         "transport": {
             "type": "vector",
             "tiles": [
-                "http://localhost:3579/all/{z}/{x}/{y}.pbf"
+                "http://localhost:8888/utilery/all/{z}/{x}/{y}.pbf"
             ]
         }
     },

@@ -1,5 +1,4 @@
 {
-    "cachedir": "/srv/data/imposm_cache",
     "connection": "postgis://ubuntu:-ubuntu-@localhost/utilery",
     "mapping": "/srv/imposm_conf/mapping.yml"
 }
