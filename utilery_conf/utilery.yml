@@ -17,7 +17,7 @@ buffer: 20
 layers:
   - name: navitia_stops
     queries:
-    - minzoom : 0
+    - minzoom : 12
       maxzoom: 22
       sql: |-
           SELECT geom2 as way, identifiant, nom, wtf_category
@@ -25,9 +25,15 @@ layers:
           where wtf_category is not null
   - name: all_navitia_stops
     queries:
-    - minzoom : 0
+    - minzoom : 12
       maxzoom: 22
       sql: |-
           SELECT geom2 as way, identifiant, nom, wtf_category
           FROM stops
-          
+  - name: density_country
+    queries:
+    - minzoom : 0
+      maxzoom: 12
+      sql: |-
+          SELECT geom2 as way, iso2, name, count
+          FROM workd_borders_stats

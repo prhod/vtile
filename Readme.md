@@ -33,6 +33,10 @@ les données seront importées avec imposm3 et le script de retraitement des don
 ### Comment ajouter un nouveau traitement de BDD dans un autre fichier sql
 Créer le fichier SQL dans le répertoire `./imposm_conf` et l'ajouter à la fin du script `vagrant/Vagrant_setup2_db.sh`.
 
+###Points d'attention
+#### Layers utilery
+L'information géométrique du layer doit être exposée en tant que `way`, et avoir la référence spatiale (srid) 3857.
+
 ### Les répertoires clés
 Les répertoires du projet :
 * ./vagrant : répertoire qui contient les scripts d'installation et de nettoyage de la machine virtuelle
